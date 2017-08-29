@@ -1,0 +1,3 @@
+= Bemvindo ao site
+
+Esse site está feito em Asciidoctor
