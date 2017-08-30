@@ -3,43 +3,27 @@ import numpy as np
 import copy
 from collections import deque
 
-lista = deque()
+lista_1 = deque()
 numero = 0
 com_furo = 0
 
-def criaLista(pixel,valor):
-    global lista, numero, im_2
-    if im_2[pixel[0], pixel[1]] == numero:
-        return
+def floodfill(pixel,valor):
+    global lista_1, im_2
+    troca = im_2[pixel[0],pixel[1]]
 
-    for x in range(-1, 2):
-        for y in range(-1, 2):
-            try:
-                if im_2[pixel[0] + x, pixel[1] + y] == valor and not [pixel[0] + x, pixel[1] + y] in lista:
-                    lista.append([pixel[0] + x, pixel[1] + y])
-                    criaLista([pixel[0]+x,pixel[1]+y], valor)
-            except:
-                pass
+    lista_1.append(pixel)
+    im_2[pixel[0],pixel[1]] = valor
+    while not len(lista_1) == 0:
+        elemento = lista_1.pop()
+        for x in range(-1, 2):
+            for y in range(-1, 2):
+                try:
+                    if im_2[elemento[0] + x, elemento[1] + y] == troca and not [elemento[0] + x, elemento[1] + y] in lista_1:
+                        lista_1.append([elemento[0] + x, elemento[1] + y])
+                        im_2[elemento[0] + x, elemento[1] + y] = valor
 
-def floodfill(pixel, valor):
-    global lista, numero, im_2
-    # if im_2[pixel[0],pixel[1]] == numero:
-    #     return
-    #
-    # im_2[pixel[0],pixel[1]] = numero
-    # for x in range(-1,2):
-    #     for y in range(-1,2):
-    #         try:
-    #             if im_2[pixel[0]+x, pixel[1]+y] == valor:
-    #                 # floodfill([pixel[0]+x,pixel[1]+y], valor)
-    #                 lista.append([pixel[0]+x, pixel[1]+y])
-    #         except:
-    #             pass
-    criaLista(pixel,valor)
-    while len(lista) != 0:
-        [x,y] = lista.pop()
-        im_2[x,y] = numero
-
+                except:
+                    pass
 
 
 image = cv2.imread("bolhas.png",0)
@@ -52,37 +36,41 @@ im_2 = copy.copy(image)
 
 for x in range(width):
     if im_2[0,x] == 255:
-        floodfill([0,x],255)
+        floodfill([0,x],0)
     if im_2[height-1, x] == 255:
-        floodfill([height-1,x],255)
+        floodfill([height-1,x],0)
 
 for y in range(width):
     if im_2[y,0] == 255:
-        floodfill([y,0],255)
+        floodfill([y,0],0)
     if im_2[y, width-1] == 255:
-        floodfill([y, width-1],255)
+        floodfill([y, width-1],0)
 
-numero += 1
+numero += 20
 for x in range(width):
     for y in range(height):
         if im_2[x,y] == 255:
-            floodfill([x,y],255)
+            floodfill([x,y],numero)
             numero += 1
 
-print(numero-1)
+print(numero-20)
 
 im_3 = copy.copy(im_2)
+cv2.imshow("image", im_2)
+cv2.waitKey(5)
 
-numero = 255
-floodfill([0,0],0)
-# for y in range(height):
-#     for x in range(width):
-#         if im_2[x,y] == 0:
-#             floodfill([x,y],0)
-#             if im_2[x-1,y] != 255:
-#                 com_furo += 1
-#                 floodfill([x-1,y],im_2[x-1,y])
+floodfill([0,0],255)
+cv2.imshow("image", im_2)
+cv2.waitKey(0)
+for x in range(height):
+    for y in range(width):
+        if im_2[y,x] == 0:
+            floodfill([y,x],255)
+            if im_2[y-1,x] != 255:
+                com_furo += 1
+                floodfill([y-1,x],255)
 
 cv2.imshow("image", im_2)
+print(com_furo)
 
 cv2.waitKey(0)
