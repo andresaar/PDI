@@ -9,6 +9,9 @@ image = cv2.imread("nina.jpg",0)
 cv2.imshow("nina",image)
 cv2.waitKey(0)
 
+cam = cv2.VideoCapture()
+cam.open(0)
+
 hist = cv2.calcHist([image],[0],None,[nbins],[0,256])
 
 hist_acum = []
@@ -25,7 +28,7 @@ print(height,width)
 for y in range(height):
     for x in range(width):
         index = image[y,x]
-        im_2[y,x] = np.round(hist_acum[index]*255/(height*width-1))
+        im_2[y,x] = np.round(hist_acum[index]*255/(height*width))
 
 hist2 = cv2.calcHist([im_2],[0],None,[nbins],[0,256])
 
