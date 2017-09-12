@@ -1,5 +1,4 @@
 import cv2
-import numpy as np
 import copy
 from collections import deque
 
@@ -29,10 +28,10 @@ def floodfill(pixel,valor):
 image = cv2.imread("bolhas.png",0)
 cv2.namedWindow("image")
 cv2.imshow("image", image)
-
-cv2.waitKey(0)
 height, width = image.shape
 im_2 = copy.copy(image)
+cv2.waitKey(0)
+
 
 for x in range(width):
     if im_2[0,x] == 255:
@@ -55,13 +54,11 @@ for x in range(width):
 
 print(numero-20)
 
-im_3 = copy.copy(im_2)
-cv2.imshow("image", im_2)
-cv2.waitKey(5)
-
-floodfill([0,0],255)
 cv2.imshow("image", im_2)
 cv2.waitKey(0)
+
+floodfill([0,0],255)
+
 for x in range(height):
     for y in range(width):
         if im_2[y,x] == 0:
@@ -70,7 +67,6 @@ for x in range(height):
                 com_furo += 1
                 floodfill([y-1,x],255)
 
-cv2.imshow("image", im_2)
 print(com_furo)
 
 cv2.waitKey(0)
